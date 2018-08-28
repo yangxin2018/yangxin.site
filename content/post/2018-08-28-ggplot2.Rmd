@@ -1,0 +1,238 @@
+---
+title: "ggplot2教程"
+author: "Yang"
+date: '2018-08-28'
+slug: ggplot2
+tags: plot
+categories: R
+---
+
+
+## 包的简介
+ggplot2是什么
+ggplot2在R包中的地位
+
+## 基本原理 
+## 语句框架 
+## 实际案例
+
+* 绘制几种常用的图 （折线图、散点图）
+* 图例的设置
+* 坐标轴的设置 
+* 分面的设置 
+* 注释的设置 
+* 主题的设置
+* 扩展包
+
+## 参考资料
+
+###【包的简介】
+
+###【基本原理】
+
+ggplot2遵从一整套图形语法，其涉及的核心概念有：几何对象(geom)，统计变换(stat)，映射(mapping)，标度(scale),数据(data)，分面(facet)，图层（layer），主题（theme）。
+
+ggplot2绘图的基本逻辑就是：
+1. 假若面前有一个数据集data,需要你绘制图表，对其进行可视化展示。
+2. 在可视化之前，需要将原始数据data转换为绘制图表的数据。
+3. 绘制图表的数据可以分为两个部分，一部分是关于位置position，另一部分就是位置之外的，主要是一些视觉元素，大小，线型，边框色，填充色，形状，我们叫做geom。
+4. 从转换后的数据到position+geom，需要控制的是，一个数据集的众多变量和geom+position的对应关系（这里边就涉及的问题是，数据需要什么样的视觉元素来呈现），第二个需要控制的就是如何呈现。
+5. 你可以使用多个数据集来绘制在一张图上。
+6. 每个数据集可以绘制一个图层，多个数据集就是将多个图层组装在一起。
+7. 将数据展示在图形上，分为两个部分：一个就是（x,y)；另一个就是linetype, size, colour, fill, shape等。
+8. 前者的引导元素是坐标轴，后者的引导元素就是图例。两者都通过标度进行控制。
+
+###【语句框架】
+
+
+###【实际案例】
+
+1. 折线图和散点图的绘制
+
+```
+ ggplot(data=data.plot.count,aes(x=ts,y=count))+
+    geom_point()+
+    geom_line(aes(x=time,y=count))+
+    xlab("时间")+
+    ylab("count")+
+    theme(axis.text.x = element_text(angle=90, hjust=1, vjust=.5))+
+    theme(panel.background = element_rect(colour='black'))
+    
+  ggplot(data=data.plot.Ssn,aes(y=data.plot.Ssn,x=timepoint))+
+    geom_point()+
+    xlab("时间")+ 
+    ylab("Ssn")+
+    theme(axis.text.x = element_text(angle=90, hjust=1, vjust=.5))+
+    theme(panel.background = element_rect(colour='black'))
+
+
+```
+
+
+
+
+
+2. 图例的设置
+
+* 如何隐藏图例
+* 如何隐藏图例标题
+* 如何更改图例顺序
+* 如何更改图例的标签文字
+* 如恶化设置图例标题和标签文字的大小和颜色
+* 如何将图例放到图的上方
+
+```
+geom_line(aes(color= )，size= ,show_guide=F)
+#隐藏图例
+
+guides(fill=F) #隐藏由fill产生的图例
+
+scale_fill_discrete(guide=F) #隐藏由fill产生的图例
+
+theme(lengend.position="none") #隐藏所有图例
+
+guides(color=guide_legend(title=NULL))
+#对color产生的图例去掉标题
+
+theme(legend.title=element_blank()) 
+#把所有图例的标题去掉
+
+scale_color_discrete(breaks=c("A","B","C","D"))
+#修改图例顺序
+
+scale_colour_discrete(breaks=c("A","B","C","D"),labels=c("W","X","Y","X"))
+#修改图例的标签文字
+
+theme(legend.title=element_text(color=,size= ,face= ))
+#设置标题图例
+
+theme(legend.text=element_text(color= , size= ,face= ))
+#设置图例标签
+
+theme(legend.position="top") 
+#设置图例放到图的上方
+
+
+```
+
+【参考资料】http://www.cookbook-r.com/Graphs/Legends_%28ggplot2%29/
+
+3. 坐标轴的设置
+
+* 修改坐标轴的显示范围
+* 修改坐标轴的标签
+* 修改坐标轴的刻度标签
+* 修改坐标轴的刻度间隔
+* 去掉网格线
+* 去掉刻度线
+* 去掉外层边框
+* 无刻度、无标签
+
+```
+scale_x_continuous(limits=c(-5,15))
+xlim(-5,15)
+
++xlab("这是X轴") 
++ylab("这是y轴")
++ggtitle("这是标题")
+
++labs(x="这是x轴",y="这是y轴",title="这是标题")
+
++theme(axis.title.x=element_text(size=15,family="myfont",color="green",face="bold",vjust=0.5,hjust=0.5,angle=45))
+
+#face:
+#  plain 普通
+#  bold 加粗
+#  italic 斜体
+#  bold.italic 斜体加粗
+
+
++scale_x_continuous(breaks,labels) #重点
+# breaks 为刻度线的位置
+# labels 为刻度线上显示的内容
+
++theme(axis.text.x=element_text(size=15,family=,color,face,vjust,hjust,angle)#修改刻度上文字格式
+ 
++ scale_x_continuous(breaks=seq(0,10,5))
+# 修改刻度线间隔
+ 
++theme(panel.grid=element_blank()) 
+#删除网格线
+ 
++theme(axis.text=element_blank()) 
+#删除所有刻度线的标签
+ 
++theme(axis.text.y=element_blank())
+#删除y轴上的刻度标签
+ 
++theme(axis.ticks=element_blank())
+#删除所有刻度线
+ 
++theme(axis.ticks.y=element_blank())
+#删除y轴的刻度线
+ 
++theme(panel.border=element_blank())
+#删除外层边框
+ 
++theme(axis.line=element_line(size=1,colour="black"))
+#再加上坐标轴，无刻度线，无标签
+
+```
+
+4. 分面的设置
+
+* facet_grid
+* facet_wrap
+
+5. 注释的设置
+* 数学表达式
+* 直线
+* 分割标记
+* 长方形
+* 误差线
+* 文本
+
+```
+#数学表达式注释
+annotate("text",x= ,y= ,label= ,alpha= ,family= ,fontface= ,colour= ,size=  )
+annotate("text",x= ,y= ,parse=T,label=)
+
+#直线注释
+geom_abline(intercept= , slope= )
+geom_hline(yintercept=)
+geom_vline(xintercept=)
+
+#分割标记注释
+annotate("segment",x,xend,y,yend)
+
+#长方形阴影注释
+annotate("rect",xmin,xmax,ymin,ymax,alpha,fill)
+
+#误差线注释
+geom_errorbar(aes(ymin,ymax),width)
+
+```
+
+6.主题的设置
+
+* 调用相关的主题包进行设置
+* 自定义设置
+
+
+### 扩展包
+* ggnetwork 网络图绘制
+* ggtheme 扩展主题
+* ggmap 空间数据可视化
+* ggcorrplot 相关矩阵可视化
+* ggradar 雷达图
+* ggally
+* ggiraph 在ggplot2静态图上增加高级交互或者动画
+
+### 参考资料
+
+
+
+
+
+
+
